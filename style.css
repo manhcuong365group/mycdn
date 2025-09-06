@@ -1,5 +1,4 @@
-<style>
-        body {
+body {
             overflow-x: hidden;
             position: relative;
         }
@@ -37,4 +36,3 @@ pointer-events: none;
         opacity: 0;
       }
     }
-    </style>
