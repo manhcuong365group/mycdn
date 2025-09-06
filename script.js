@@ -1,5 +1,4 @@
-<canvas id="fireworksCanvas"></canvas>
-    <script>
+
     // Cài đặt canvas
     const canvas = document.getElementById("fireworksCanvas");
     const ctx = canvas.getContext("2d");
@@ -201,4 +200,3 @@
 
     // Bắt đầu hiệu ứng
     startIntervals();
-  </script>
