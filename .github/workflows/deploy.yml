@@ -44,3 +44,4 @@ jobs:
             sudo chown -R www:www .
             sudo chmod -R 755 .
             echo "🚀 CDN Dist Updated Successfully!"
+# Triggering first run after migration
