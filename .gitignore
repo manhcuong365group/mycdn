@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+.agent/
+.brain/
+.gemini/
+*.log
+.env
+dist/
+# Nếu anh muốn push cả dist lên CDN thì comment dòng dưới
+# dist/

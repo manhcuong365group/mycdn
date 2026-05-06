@@ -1,0 +1,47 @@
+name: Deploy Laravel Project
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          envs: GITHUB_TOKEN
+          debug: true
+          script: |
+            set -e
+            cd /www/wwwroot/cdn.auto365.com.vn/effects
+
+            echo "[REMOTE] Fetching latest changes"
+            git config --global --add safe.directory $(pwd)
+            git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/manhcuong365group/mycdn.git"
+
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo "[REMOTE] Preparing permissions"
+            mkdir -p storage/framework/views storage/framework/cache storage/framework/sessions bootstrap/cache
+            sudo chown -R www:www . || true
+            sudo chmod -R 775 storage bootstrap/cache public
+
+            echo "[REMOTE] Production Optimization"
+            sudo -u www composer install --no-interaction --prefer-dist --optimize-autoloader
+            sudo -u www php artisan migrate --force
+            sudo -u www php artisan optimize:clear
+            sudo -u www php artisan optimize
+
+            echo "🚀 Deployment Success!"

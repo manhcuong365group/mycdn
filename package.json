@@ -1,0 +1,38 @@
+{
+  "name": "holiday-effects-cdn",
+  "version": "2.2.5",
+  "type": "module",
+  "description": "Universal holiday effects and banner system for websites",
+  "main": "holiday-effects-full.js",
+  "scripts": {
+    "build": "node build.js",
+    "serve": "npx http-server . -p 8888 --cors -c-1",
+    "test": "npx playwright test"
+  },
+  "keywords": [
+    "holiday",
+    "effects",
+    "cdn",
+    "banner",
+    "tet",
+    "noel",
+    "christmas",
+    "animation",
+    "canvas"
+  ],
+  "author": "365Group",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.59.0",
+    "terser": "^5.24.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/365group/holiday-effects-cdn"
+  },
+  "bugs": {
+    "url": "https://github.com/365group/holiday-effects-cdn/issues"
+  },
+  "homepage": "https://cdn.auto365.com.vn/effects/"
+}

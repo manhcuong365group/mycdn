@@ -1,0 +1,17 @@
+{
+  "effect": "victory",
+  "count": 50,
+  "speedMult": 1.0,
+  "banner": {
+    "enabled": false,
+    "position": "sides",
+    "images": {
+      "left": "https://cdn.auto365.com.vn/effects/images/decor-left.png",
+      "right": "https://cdn.auto365.com.vn/effects/images/decor-right.png"
+    },
+    "responsive": {
+      "hideOnMobile": true,
+      "breakpoint": 1024
+    }
+  }
+}
