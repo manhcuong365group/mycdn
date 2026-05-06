@@ -1,4 +1,4 @@
-name: Deploy Laravel Project
+name: Deploy CDN dist to Server
 
 on:
   push:
@@ -11,37 +11,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy to Server via SSH
-        uses: appleboy/ssh-action@v1.2.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies and Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy dist folder to Server
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT }}
-          envs: GITHUB_TOKEN
-          debug: true
+          source: "dist/*"
+          target: "/www/wwwroot/cdn.auto365.com.vn/effects"
+          strip_components: 1 # Loại bỏ folder dist/, chỉ đẩy nội dung bên trong
+
+      - name: Post-deployment permissions
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
           script: |
-            set -e
             cd /www/wwwroot/cdn.auto365.com.vn/effects
-
-            echo "[REMOTE] Fetching latest changes"
-            git config --global --add safe.directory $(pwd)
-            git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/manhcuong365group/mycdn.git"
-
-            git fetch origin main
-            git reset --hard origin/main
-
-            echo "[REMOTE] Preparing permissions"
-            mkdir -p storage/framework/views storage/framework/cache storage/framework/sessions bootstrap/cache
-            sudo chown -R www:www . || true
-            sudo chmod -R 775 storage bootstrap/cache public
-
-            echo "[REMOTE] Production Optimization"
-            sudo -u www composer install --no-interaction --prefer-dist --optimize-autoloader
-            sudo -u www php artisan migrate --force
-            sudo -u www php artisan optimize:clear
-            sudo -u www php artisan optimize
-
-            echo "🚀 Deployment Success!"
+            sudo chown -R www:www .
+            sudo chmod -R 755 .
+            echo "🚀 CDN Dist Updated Successfully!"
